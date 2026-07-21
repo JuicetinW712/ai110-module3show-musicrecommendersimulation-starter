@@ -28,7 +28,8 @@ class UserProfile:
     favorite_genre: str
     favorite_mood: str
     target_energy: float
-    target_valence: float
+    target_valence: float = 0.5
+    likes_acoustic: bool = False
 
 class Recommender:
     """
@@ -39,12 +40,44 @@ class Recommender:
         self.songs = songs
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
-        # TODO: Implement recommendation logic
-        return self.songs[:k]
+        user_prefs = {
+            "favorite_genre": user.favorite_genre,
+            "favorite_mood": user.favorite_mood,
+            "target_energy": user.target_energy,
+            "target_valence": getattr(user, "target_valence", 0.5),
+        }
+        scored = []
+        for song in self.songs:
+            song_dict = {
+                "title": song.title,
+                "artist": song.artist,
+                "genre": song.genre,
+                "mood": song.mood,
+                "energy": song.energy,
+                "valence": song.valence,
+            }
+            score, _ = score_song(user_prefs, song_dict)
+            scored.append((song, score))
+        scored.sort(key=lambda x: x[1], reverse=True)
+        return [s[0] for s in scored[:k]]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
-        # TODO: Implement explanation logic
-        return "Explanation placeholder"
+        user_prefs = {
+            "favorite_genre": user.favorite_genre,
+            "favorite_mood": user.favorite_mood,
+            "target_energy": user.target_energy,
+            "target_valence": getattr(user, "target_valence", 0.5),
+        }
+        song_dict = {
+            "title": song.title,
+            "artist": song.artist,
+            "genre": song.genre,
+            "mood": song.mood,
+            "energy": song.energy,
+            "valence": song.valence,
+        }
+        _, reasons = score_song(user_prefs, song_dict)
+        return ", ".join(reasons)
 
 def load_songs(csv_path: str) -> List[Dict]:
     """

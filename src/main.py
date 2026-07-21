@@ -28,17 +28,48 @@ def print_recommendations(recommendations) -> None:
 def main() -> None:
     songs = load_songs("data/songs.csv")
 
-    # Starter example profile
-    user_prefs = {
-        "favorite_genre": "pop",
-        "favorite_mood": "happy",
-        "target_energy": 0.8,
-        "target_valence": 0.7,
+    profiles = {
+        "Profile 1: High-Energy Pop": {
+            "favorite_genre": "pop",
+            "favorite_mood": "happy",
+            "target_energy": 0.85,
+            "target_valence": 0.80,
+        },
+        "Profile 2: Chill Lofi": {
+            "favorite_genre": "lofi",
+            "favorite_mood": "chill",
+            "target_energy": 0.30,
+            "target_valence": 0.50,
+        },
+        "Profile 3: Deep Intense Rock": {
+            "favorite_genre": "rock",
+            "favorite_mood": "intense",
+            "target_energy": 0.95,
+            "target_valence": 0.40,
+        },
+        "Profile 4 (Adversarial): Sad High-Energy Pop": {
+            "favorite_genre": "pop",
+            "favorite_mood": "sad",
+            "target_energy": 0.90,
+            "target_valence": 0.10,
+        },
+        "Profile 5 (Adversarial): High-Energy Lofi Focus": {
+            "favorite_genre": "lofi",
+            "favorite_mood": "focused",
+            "target_energy": 0.95,
+            "target_valence": 0.90,
+        },
     }
 
-    recommendations = recommend_songs(user_prefs, songs, k=5)
-    print_recommendations(recommendations)
+    for name, prefs in profiles.items():
+        print(f"\n============================================================")
+        print(f" PROFILE: {name}")
+        print(f" Preferences: {prefs}")
+        print(f"============================================================")
+        recommendations = recommend_songs(prefs, songs, k=5)
+        print_recommendations(recommendations)
 
 
 if __name__ == "__main__":
     main()
+
